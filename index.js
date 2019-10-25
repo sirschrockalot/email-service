@@ -61,7 +61,7 @@ app.post('/send', (req, res) => {
   console.log(sampleFile);
   // console.log(req.files);
 
-  sampleFile.mv('/tmp' + sampleFile.name, function(err) {
+  sampleFile.mv('/tmp/' + sampleFile.name, function(err) {
     console.log(err);
     if (err) {
       console.log('Sample File move had an error:' + err);
