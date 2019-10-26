@@ -19,8 +19,8 @@ app.use(fileUpload());
 
 // var auth = {
 //   type: 'OAuth2',
-//   user: 'joel.schrock@gmail.com',
-//   clientId: '1076818140633-119qd0jse81pgnognfc51d6qv0hlnmt6.apps.googleusercontent.com',
+//   user: 'jetcutsquote@gmail.com',
+//   clientId: '810509088701-jtgnqkf3s22v9dg97tum3c34mfi3j90p.apps.googleusercontent.com',
 //   clientSecret: 'BvNoOZAwzpIP_OaZkjcnrZ2X'
 //   // refreshToken: 'YOUR_REFRESH_TOKEN'
 // };
@@ -37,19 +37,29 @@ app.use((req, res, next) => {
   next();
 });
 
+// let transporter = nodemailer.createTransport({
+//   host: 'smtp.ethereal.email',
+//   port: 587,
+//   secure: false, // true for 465, false for other ports
+//   auth: {
+//     user: 'roberta22@ethereal.email', // generated ethereal user
+//     pass: 'P1kEMy7RntPRxgq5xZ' // generated ethereal password
+//   }
+// });
+
 let transporter = nodemailer.createTransport({
-  host: 'smtp.ethereal.email',
-  port: 587,
-  secure: false, // true for 465, false for other ports
+  host: 'smtp.googlemail.com', // Gmail Host
+  port: 465, // Port
+  secure: true, // this is true as port is 465
   auth: {
-    user: 'roberta22@ethereal.email', // generated ethereal user
-    pass: 'P1kEMy7RntPRxgq5xZ' // generated ethereal password
+    user: 'jetcutsquote@gmail.com', //Gmail username
+    pass: 'Green4us' // Gmail password
   }
 });
 
 app.post('/send', (req, res) => {
-  console.log('Request Files: ' + req.files); // list of the files
-  console.log('Request Body: ' + req.body); // request body, like email
+  // console.log('Request Files: ' + req.files); // list of the files
+  // console.log('Request Body: ' + req.body); // request body, like email
 
   let senderName = req.body.contactFormName;
   let senderEmail = req.body.contactFormEmail;
@@ -58,7 +68,7 @@ app.post('/send', (req, res) => {
   let copyToSender = req.body.contactFormCopy;
   // let fileUpload = req.files.;
   let sampleFile = req.files.contactFormFile;
-  console.log(sampleFile);
+  // console.log(sampleFile);
   // console.log(req.files);
 
   sampleFile.mv('/tmp/' + sampleFile.name, function(err) {
@@ -71,7 +81,7 @@ app.post('/send', (req, res) => {
   });
 
   let mailOptions = {
-    to: ['"JetCuts Quote" customer@gmail.com'], // Enter here the email address on which you want to send emails from your customers
+    to: ['"JetCuts Quote"', senderEmail], // Enter here the email address on which you want to send emails from your customers
     from: 'shannon@jetcutswi.com',
     subject: messageSubject,
     text: messageText,
@@ -124,10 +134,10 @@ app.post('/send', (req, res) => {
   transporter.sendMail(mailOptions, (error, response) => {
     if (error) {
       console.log(error);
-      res.end('error');
+      res.end({ status: 'error' });
     } else {
       console.log('Message sent: ', response);
-      res.end('sent');
+      res.end({ status: 'sent' });
     }
   });
 });
